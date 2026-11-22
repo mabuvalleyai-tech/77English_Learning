@@ -1,3 +1,19 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141615" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="單字卡">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<!--artifact:start-->
 <title>拍照單字卡</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,16 +41,20 @@
   --marker:#1F4A34; --marker-ink:#CFF5E0; --good:#3CCB86; --again:#E39A5C; --danger:#EF7C7C;
   --shadow:0 2px 6px rgba(0,0,0,.3),0 16px 36px -18px rgba(0,0,0,.8); color-scheme:dark}
 *{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);background:var(--bg)}
+body{margin:0}
+img{max-width:100%}
+button,a,label,.fc{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 [hidden]{display:none!important}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-ui);font-size:15px;line-height:1.75;letter-spacing:.02em;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
-.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+.wrap{max-width:560px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:22px}
 header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:14px;border-bottom:1px solid var(--line)}
 .brand{font-family:var(--f-serif);font-weight:700;font-size:20px;background:none;border:0;color:var(--ink-solid);padding:0;cursor:pointer;letter-spacing:.08em;display:flex;align-items:center;gap:10px;min-height:0}
 .brand .mark{width:30px;height:30px;border-radius:50%;background:var(--green);color:var(--green-ink);display:grid;place-items:center;font-family:var(--f-en);font-size:14px;letter-spacing:0}
 .ver{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;font-family:var(--f-num);letter-spacing:.08em}
 h1,h2{margin:0;text-wrap:balance;font-family:var(--f-serif);font-weight:700;color:var(--ink-solid);letter-spacing:.06em}
-h1{font-size:clamp(25px,7vw,30px);line-height:1.5}
+h1{font-size:clamp(22px,6.4vw,30px);line-height:1.45}
 h2{font-size:21px;line-height:1.5}
 p{margin:0}
 .muted{color:var(--muted)} .small{font-size:13px}
@@ -56,7 +76,7 @@ svg.i{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .sheet{background:var(--card);border-radius:20px;box-shadow:var(--shadow)}
 
 /* home */
-.intro{padding:28px 22px 24px;display:flex;flex-direction:column;gap:14px;border-radius:32px;background:var(--soft)}
+.intro{padding:22px 20px 18px;display:flex;flex-direction:column;gap:10px;border-radius:32px;background:var(--soft)}
 .intro .lead{color:var(--ink)}
 .intro .big{min-height:54px;font-size:16px}
 .stat{display:flex;align-items:baseline;gap:6px;padding-top:8px;border-top:1px solid var(--line)}
@@ -77,7 +97,7 @@ svg.i{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .seg button[aria-pressed="true"]{background:var(--ink-solid);color:var(--bg)}
 
 /* ---- flip card ---- */
-.fc{perspective:1400px;cursor:pointer;-webkit-tap-highlight-color:transparent;border-radius:24px}
+.fc{perspective:1400px;cursor:pointer;touch-action:pan-y;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;border-radius:24px}
 .fc-in{display:grid;transition:transform .55s cubic-bezier(.3,.7,.2,1);transform-style:preserve-3d}
 .fc.flipped .fc-in{transform:rotateY(180deg)}
 .face{grid-area:1/1;backface-visibility:hidden;-webkit-backface-visibility:hidden;position:relative;display:flex;flex-direction:column;border-radius:24px;background:var(--card);box-shadow:var(--shadow);border:1px solid var(--line)}
@@ -114,6 +134,22 @@ svg.i{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .opts{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .tog{min-height:36px;padding:4px 14px;font-size:14px;border-color:var(--line);color:var(--muted)}
 .tog[aria-pressed="true"]{background:var(--ink-solid);color:var(--bg);border-color:var(--ink-solid)}
+/* study screen: fits one phone screen, answer bar under the thumb */
+.study{display:flex;flex-direction:column;gap:12px;min-height:calc(100dvh - 120px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
+.study .topbar{display:flex;align-items:center;gap:8px}
+.study .topbar .text{max-width:60%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;text-align:left;padding-left:0}
+.study .progress{flex:1}
+.study .big-card{flex:1;display:flex;flex-direction:column}
+.study .big-card .fc-in{flex:1}
+.big-card .face{min-height:clamp(300px,52dvh,460px)}
+.answerbar{position:sticky;bottom:0;z-index:5;margin-inline:-16px;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:linear-gradient(to bottom,transparent,var(--bg) 18%)}
+.nav{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px}
+.nav button{min-height:42px;font-size:15px;border-color:var(--line);color:var(--ink-solid);background:var(--card)}
+.opts{overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none;margin-inline:-16px;padding-inline:16px}
+.opts::-webkit-scrollbar{display:none}
+.opts>*{flex:none}
+@media (max-height:640px){.big-card .face{min-height:260px}.en{font-size:clamp(32px,10vw,44px)}.front{padding:32px 16px}}
+@media (min-width:700px){.wrap{max-width:620px}.wall{grid-template-columns:repeat(3,minmax(0,1fr))}}
 /* card wall */
 .wall{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .wall .fc,.wall .face{border-radius:18px}
@@ -135,7 +171,7 @@ svg.i{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .wall .back .exhint{display:none}
 .wall .corner{top:10px;left:12px;font-size:11px}
 .wall .known{top:8px;right:8px;font-size:11px;padding:0 8px}
-.wall .turn{bottom:8px;right:12px;font-size:11px}
+.wall .turn{display:none}
 @media (max-width:360px){.wall{grid-template-columns:1fr}}
 
 /* scan + edit */
@@ -144,7 +180,7 @@ svg.i{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .thumbs div{position:relative}
 .thumbs img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:12px;display:block}
 .thumbs button{position:absolute;top:4px;right:4px;min-height:28px;width:28px;padding:0;border-radius:50%;font-size:13px;border-color:var(--line)}
-input[type=text],input[type=password],textarea{font:inherit;letter-spacing:0;width:100%;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink-solid);min-width:0}
+input[type=text],input[type=password],textarea{font:inherit;font-size:16px;letter-spacing:0;width:100%;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink-solid);min-width:0}
 textarea{resize:vertical;min-height:58px}
 label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
 .ed{display:flex;flex-direction:column;gap:8px;padding:16px;border:1px solid var(--line);box-shadow:none}
@@ -163,6 +199,9 @@ details ul{margin:8px 0 0;padding-left:20px;color:var(--muted)}
 .done .score{font-family:var(--f-num);font-size:56px;font-weight:500;line-height:1;color:var(--ink-solid)}
 .done .score small{font-size:22px;color:var(--muted)}
 </style>
+</head>
+<body>
+<!--artifact:body-->
 
 <div class="wrap" id="app">
   <header>
@@ -177,8 +216,9 @@ details ul{margin:8px 0 0;padding-left:20px;color:var(--muted)}
 </div>
 
 <script>
-const VERSION = "v2.0";
+const VERSION = "v2.1";
 const CHANGELOG = [
+  ["v2.1","2026-11-22","手機版面優化：補上手機網頁設定（之前在手機上會縮成電腦版大小）、練習畫面一頁放得下、按鈕移到下方拇指好按的位置、新增「上一張」、輸入框不再自動放大；可加到主畫面當 App 用；發音改成 OpenAI 自然人聲（可切回手機內建），同一句只產生一次；新增「上一個／下一個」按鈕，左右滑動單字卡就能翻面；拿掉通關密碼"],
   ["v2.0","2026-11-22","不用登入 Claude 也能用：部署到 Vercel，拍照辨識改由伺服器呼叫 OpenAI（金鑰藏在伺服器端，加通關密碼防盜用），單字卡存在手機瀏覽器裡；配色與排版改成白底、明朝體標題、綠色圓角按鈕的清爽風格；每個單字都是可翻轉的卡片（正面英文＋音標，背面中文、詞性、例句）；單字表改成可逐張翻轉的卡片牆；練習時可選先看哪一面"],
   ["v1.0","2026-11-22","第一版：拍課本單字頁自動變成單字卡、點英文唸發音、翻卡練習（記住了／還不熟）、單字表、手動編輯、內建 Lesson 5 範例"],
 ];
@@ -227,7 +267,7 @@ function markEx(ex,hl){
 const blankCard = () => ({id:uid(),en:"",pos:"",zh:"",ipa:"",example:"",hl:"",known:false});
 
 /* ---------- speech (browser built-in) ---------- */
-const prefs = Object.assign({rate:0.85, autoSpeak:true}, lsGet("wc_prefs",{}));
+const prefs = Object.assign({rate:0.85, autoSpeak:true, voiceMode:"natural"}, lsGet("wc_prefs",{}));
 let voice = null;
 function pickVoice(){
   if(!("speechSynthesis" in window)) return;
@@ -236,9 +276,50 @@ function pickVoice(){
        || vs.find(v=>/en[-_]US/i.test(v.lang)) || vs[0] || null;
 }
 if("speechSynthesis" in window){ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
-function speak(text, el, rate){
+const sayText = t => String(t).replace(/\s*\/\s*/g,", ").replace(/……|\.\.\./g," ").trim();
+/* 自然人聲：由伺服器（/api/tts）用 OpenAI 產生，同一句只產生一次 */
+const useNatural = () => server.ok && prefs.voiceMode!=="device";
+const ttsCache = new Map();
+const player = new Audio(); player.preload="auto";
+const SILENT="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=";
+let unlocked=false;
+document.addEventListener("pointerdown",()=>{ if(unlocked) return; unlocked=true; try{ player.src=SILENT; player.play().catch(()=>{}); }catch(e){} },{capture:true,once:false});
+function prefetch(text){
+  if(!useNatural()) return null;
+  const t=sayText(text); if(!t || t.length>300) return null;
+  if(!ttsCache.has(t)){
+    const pr=fetch("api/tts?t="+encodeURIComponent(t),{headers:{"x-app-passcode":getPass()}})
+      .then(r=>{ if(!r.ok) throw new Error("tts "+r.status); return r.blob(); })
+      .then(b=>URL.createObjectURL(b));
+    pr.catch(()=>ttsCache.delete(t));
+    ttsCache.set(t,pr);
+  }
+  return ttsCache.get(t);
+}
+const RATE_MAP={0.65:0.8,0.85:1,1:1.15};
+let ttsFailed=false;
+async function speak(text, el, rate){
+  const pr = !ttsFailed && prefetch(text);
+  if(pr){
+    if(el) el.classList.add("speaking");
+    try{
+      const url=await pr;
+      if("speechSynthesis" in window) speechSynthesis.cancel();
+      player.pause(); player.src=url; player.playbackRate=RATE_MAP[prefs.rate]||1;
+      player.onended=player.onerror=()=>el&&el.classList.remove("speaking");
+      await player.play();
+      return;
+    }catch(e){
+      console.warn(e); if(el) el.classList.remove("speaking");
+      if(String(e).includes("tts")){ ttsFailed=true; toast("自然人聲暫時無法使用，先改用手機內建聲音"); }
+      else return; // 播放被瀏覽器擋下時不要重複唸
+    }
+  }
+  speakDevice(text, el, rate);
+}
+function speakDevice(text, el, rate){
   if(!("speechSynthesis" in window)){ toast("這台裝置的瀏覽器不支援朗讀"); return; }
-  const say = String(text).replace(/\s*\/\s*/g,", ").replace(/……|\.\.\./g," ");
+  const say = sayText(text);
   speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(say);
   u.lang = "en-US"; if(voice) u.voice = voice; u.rate = rate || prefs.rate;
@@ -326,7 +407,7 @@ function cardHTML(c, n, {flipped=false, cls=""}={}){
         <div class="en">${esc(c.en)}</div>
         ${c.ipa?`<div class="kk">${esc(c.ipa)}</div>`:``}
         <button class="say" data-say="en" aria-label="唸出 ${esc(c.en)}">${ICON_SPEAK}</button>
-        <span class="turn">${ICON_TURN}翻面</span>
+        <span class="turn">${ICON_TURN}點一下或左右滑動翻面</span>
       </div>
       <div class="face back">
         <div class="head"><span class="w">${esc(c.en)}</span><button class="say" data-say="en" aria-label="唸出 ${esc(c.en)}">${ICON_SPEAK}</button></div>
@@ -335,7 +416,7 @@ function cardHTML(c, n, {flipped=false, cls=""}={}){
           ${c.example?`<button class="ex" data-say="ex">${markEx(c.example,hlOf(c))}</button>
           <span class="exhint">${ICON_SPEAK.replace('class="i"','class="i" style="width:14px;height:14px"')}點例句聽整句</span>`:``}
         </div>
-        <span class="turn">${ICON_TURN}翻面</span>
+        <span class="turn">${ICON_TURN}點一下或左右滑動翻面</span>
       </div>
     </div></div>`;
 }
@@ -344,8 +425,17 @@ function wireCard(el, c, onFlip){
   el.addEventListener("click",e=>{
     const s=e.target.closest("[data-say]");
     if(s){ e.stopPropagation(); s.dataset.say==="ex" ? speak(c.example,null,Math.max(0.7,prefs.rate)) : speak(c.en, s.classList.contains("say")?s:null); return; }
-    el.classList.toggle("flipped"); onFlip && onFlip(el.classList.contains("flipped"));
+    if(Date.now()-swiped<400) return;
+    flip();
   });
+  const flip=()=>{ el.classList.toggle("flipped"); onFlip && onFlip(el.classList.contains("flipped")); };
+  /* 左右滑動翻面（上下滑動照常捲動頁面） */
+  let sx=0, sy=0, st=0, swiped=0;
+  el.addEventListener("touchstart",e=>{ const t=e.touches[0]; sx=t.clientX; sy=t.clientY; st=Date.now(); },{passive:true});
+  el.addEventListener("touchend",e=>{
+    const t=e.changedTouches[0], dx=t.clientX-sx, dy=t.clientY-sy;
+    if(Math.abs(dx)>40 && Math.abs(dx)>Math.abs(dy)*1.5 && Date.now()-st<800){ swiped=Date.now(); flip(); }
+  },{passive:true});
   el.addEventListener("keydown",e=>{ if((e.key==="Enter"||e.key===" ") && e.target===el){ e.preventDefault(); el.click(); }});
 }
 
@@ -363,7 +453,6 @@ function renderHome(v){
       <button class="text small" id="newManual">或自己打字建立一組</button>
       <div class="stat"><span class="small muted">已經記住</span><b>${allKnown}</b><span class="small muted">個單字</span></div>
     </div>
-    ${store.mode==="local" ? `<p class="notice small">單字卡存在這支手機（這個瀏覽器）裡，換手機或清除瀏覽資料不會帶過去。</p>` : ``}
     <div class="eyebrow">我的單字卡</div>
     <div class="decks">
     ${decks.map(d=>{
@@ -388,6 +477,14 @@ function renderHome(v){
       </span>
       <button class="text" id="testVoice">${ICON_SPEAK}試聽</button>
     </div>
+    ${store.mode==="local" ? `<p class="small muted">單字卡存在這支手機的瀏覽器裡，換手機或清除瀏覽資料不會帶過去。</p>` : ``}
+    ${server.ok?`<div class="settings">
+      <span>發音聲音</span>
+      <span class="seg">
+        <button data-vm="natural" aria-pressed="${prefs.voiceMode!=="device"}">自然人聲</button>
+        <button data-vm="device" aria-pressed="${prefs.voiceMode==="device"}">手機內建</button>
+      </span>
+    </div>`:``}
   </div>`;
   $("#newScan").onclick=()=>go("scan");
   $("#newManual").onclick=()=>go("edit",{id:null,title:"",cards:[blankCard()],fresh:true});
@@ -404,7 +501,8 @@ function renderHome(v){
     };
   });
   v.querySelectorAll("[data-rate]").forEach(b=>b.onclick=()=>{prefs.rate=+b.dataset.rate; lsSet("wc_prefs",prefs); render(); speak("wonderful");});
-  $("#testVoice").onclick=()=>speak("Hello! Let's learn some new words.");
+  $("#testVoice").onclick=e=>speak("Hello! Let's learn some new words.", e.currentTarget);
+  v.querySelectorAll("[data-vm]").forEach(b=>b.onclick=()=>{prefs.voiceMode=b.dataset.vm; ttsFailed=false; lsSet("wc_prefs",prefs); render(); speak("wonderful");});
 }
 
 /* ---------- scan ---------- */
@@ -576,22 +674,25 @@ function renderStudy(v){
   }
   const idx=a.order[a.pos], c=deck.cards[idx];
   v.innerHTML=`
-  <div class="stack">
-    <div class="row"><button class="text" id="back">← ${esc(deck.title)}</button></div>
-    <div class="progress"><span><b>${a.pos+1}</b> / ${a.order.length}</span><div class="bar"><i style="width:${Math.round(a.pos/a.order.length*100)}%"></i></div></div>
-    ${cardHTML(c, idx+1, {flipped: sp.start==="zh", cls:"big-card"})}
-    <div class="answer"><button class="again" id="no">還不熟</button><button class="good" id="yes">記住了</button></div>
+  <div class="study">
+    <div class="topbar"><button class="text" id="back">← ${esc(deck.title)}</button>
+      <div class="progress"><span><b>${a.pos+1}</b> / ${a.order.length}</span><div class="bar"><i style="width:${Math.round(a.pos/a.order.length*100)}%"></i></div></div></div>
     <div class="opts">
       <span class="small muted">先看</span>
       <span class="seg"><button id="sEn" aria-pressed="${sp.start==="en"}">英文面</button><button id="sZh" aria-pressed="${sp.start==="zh"}">中文面</button></span>
       <button class="tog" id="shuf" aria-pressed="${sp.shuffle}">隨機順序</button>
       <button class="tog" id="auto" aria-pressed="${prefs.autoSpeak}">自動發音</button>
     </div>
+    ${cardHTML(c, idx+1, {flipped: sp.start==="zh", cls:"big-card"})}
+    <div class="answerbar"><div class="nav"><button id="prev" ${a.pos?"":"disabled"}>‹ 上一個</button><button id="skip">下一個 ›</button></div><div class="answer"><button class="again" id="no">還不熟</button><button class="good" id="yes">記住了</button></div></div>
   </div>`;
   const fc=v.querySelector(".fc");
   wireCard(fc, c, flipped=>{ if(prefs.autoSpeak && sp.start==="zh" && !flipped) speak(c.en); });
   $("#back").onclick=()=>go("home");
-  const next=(known)=>{ c.known=known; known?a.good++:a.again++; a.pos++; saveSoon(deck); render(); };
+  a.hist=a.hist||[];
+  const next=(known)=>{ a.hist.push({c,was:c.known,known}); c.known=known; known?a.good++:a.again++; a.pos++; saveSoon(deck); render(); };
+  $("#prev").onclick=()=>{ const h=a.hist.pop(); if(!h) return; if(!h.skip){ h.c.known=h.was; h.known?a.good--:a.again--; saveSoon(deck); } a.pos--; render(); };
+  $("#skip").onclick=()=>{ a.hist.push({c,skip:true}); a.pos++; render(); };
   $("#no").onclick=()=>next(false); $("#yes").onclick=()=>next(true);
   const reset=()=>{delete a.order; render();};
   $("#sEn").onclick=()=>{sp.start="en";lsSet("wc_study",sp);render();};
@@ -599,6 +700,8 @@ function renderStudy(v){
   $("#shuf").onclick=()=>{sp.shuffle=!sp.shuffle;lsSet("wc_study",sp);reset();};
   $("#auto").onclick=()=>{prefs.autoSpeak=!prefs.autoSpeak;lsSet("wc_prefs",prefs);render();};
   if(sp.start==="en" && prefs.autoSpeak && a.pos>0) speak(c.en, fc.querySelector(".front .say"));
+  prefetch(c.en); if(c.example) prefetch(c.example);
+  const nx=a.order[a.pos+1]; if(nx!=null) prefetch(deck.cards[nx].en);
 }
 
 /* ---------- card wall ---------- */
@@ -608,7 +711,7 @@ function renderList(v){
   <div class="stack">
     <div class="row"><button class="text" id="back">← 返回</button><span class="grow"></span><button class="primary" id="st">開始練習</button></div>
     <h2>${esc(deck.title)}</h2>
-    <div class="row small muted"><span class="grow">點卡片翻面，點喇叭聽發音。</span><button class="text small" id="allBack">全部翻到中文</button></div>
+    <div class="row small muted"><span class="grow">點一下或左右滑動卡片就能翻面，點喇叭可以聽發音。</span><button class="text small" id="allBack">全部翻到中文</button></div>
     <div class="wall">${deck.cards.map((c,i)=>cardHTML(c,i+1)).join("")}</div>
   </div>`;
   $("#back").onclick=()=>go("home");
@@ -637,3 +740,6 @@ $("#clList").innerHTML=CHANGELOG.map(([v,d,t])=>`<li><b>${esc(v)}</b>（${esc(d)
   render();
 })();
 </script>
+<!--artifact:end-->
+</body>
+</html>
