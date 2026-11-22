@@ -97,7 +97,7 @@ svg.i{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .seg button[aria-pressed="true"]{background:var(--ink-solid);color:var(--bg)}
 
 /* ---- flip card ---- */
-.fc{perspective:1400px;cursor:pointer;-webkit-tap-highlight-color:transparent;border-radius:24px}
+.fc{perspective:1400px;cursor:pointer;touch-action:pan-y;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;border-radius:24px}
 .fc-in{display:grid;transition:transform .55s cubic-bezier(.3,.7,.2,1);transform-style:preserve-3d}
 .fc.flipped .fc-in{transform:rotateY(180deg)}
 .face{grid-area:1/1;backface-visibility:hidden;-webkit-backface-visibility:hidden;position:relative;display:flex;flex-direction:column;border-radius:24px;background:var(--card);box-shadow:var(--shadow);border:1px solid var(--line)}
@@ -143,8 +143,8 @@ svg.i{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .study .big-card .fc-in{flex:1}
 .big-card .face{min-height:clamp(300px,52dvh,460px)}
 .answerbar{position:sticky;bottom:0;z-index:5;margin-inline:-16px;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:linear-gradient(to bottom,transparent,var(--bg) 18%)}
-.answer{grid-template-columns:52px 1fr 1fr}
-.answer .prev{padding:0;color:var(--muted);border-color:var(--line)}
+.nav{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px}
+.nav button{min-height:42px;font-size:15px;border-color:var(--line);color:var(--ink-solid);background:var(--card)}
 .opts{overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none;margin-inline:-16px;padding-inline:16px}
 .opts::-webkit-scrollbar{display:none}
 .opts>*{flex:none}
@@ -171,7 +171,7 @@ svg.i{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-widt
 .wall .back .exhint{display:none}
 .wall .corner{top:10px;left:12px;font-size:11px}
 .wall .known{top:8px;right:8px;font-size:11px;padding:0 8px}
-.wall .turn{bottom:8px;right:12px;font-size:11px}
+.wall .turn{display:none}
 @media (max-width:360px){.wall{grid-template-columns:1fr}}
 
 /* scan + edit */
@@ -218,7 +218,7 @@ details ul{margin:8px 0 0;padding-left:20px;color:var(--muted)}
 <script>
 const VERSION = "v2.1";
 const CHANGELOG = [
-  ["v2.1","2026-11-22","手機版面優化：補上手機網頁設定（之前在手機上會縮成電腦版大小）、練習畫面一頁放得下、按鈕移到下方拇指好按的位置、新增「上一張」、輸入框不再自動放大；可加到主畫面當 App 用；發音改成 OpenAI 自然人聲（可切回手機內建），同一句只產生一次；拿掉通關密碼"],
+  ["v2.1","2026-11-22","手機版面優化：補上手機網頁設定（之前在手機上會縮成電腦版大小）、練習畫面一頁放得下、按鈕移到下方拇指好按的位置、新增「上一張」、輸入框不再自動放大；可加到主畫面當 App 用；發音改成 OpenAI 自然人聲（可切回手機內建），同一句只產生一次；新增「上一個／下一個」按鈕，左右滑動單字卡就能翻面；拿掉通關密碼"],
   ["v2.0","2026-11-22","不用登入 Claude 也能用：部署到 Vercel，拍照辨識改由伺服器呼叫 OpenAI（金鑰藏在伺服器端，加通關密碼防盜用），單字卡存在手機瀏覽器裡；配色與排版改成白底、明朝體標題、綠色圓角按鈕的清爽風格；每個單字都是可翻轉的卡片（正面英文＋音標，背面中文、詞性、例句）；單字表改成可逐張翻轉的卡片牆；練習時可選先看哪一面"],
   ["v1.0","2026-11-22","第一版：拍課本單字頁自動變成單字卡、點英文唸發音、翻卡練習（記住了／還不熟）、單字表、手動編輯、內建 Lesson 5 範例"],
 ];
@@ -407,7 +407,7 @@ function cardHTML(c, n, {flipped=false, cls=""}={}){
         <div class="en">${esc(c.en)}</div>
         ${c.ipa?`<div class="kk">${esc(c.ipa)}</div>`:``}
         <button class="say" data-say="en" aria-label="唸出 ${esc(c.en)}">${ICON_SPEAK}</button>
-        <span class="turn">${ICON_TURN}翻面</span>
+        <span class="turn">${ICON_TURN}點一下或左右滑動翻面</span>
       </div>
       <div class="face back">
         <div class="head"><span class="w">${esc(c.en)}</span><button class="say" data-say="en" aria-label="唸出 ${esc(c.en)}">${ICON_SPEAK}</button></div>
@@ -416,7 +416,7 @@ function cardHTML(c, n, {flipped=false, cls=""}={}){
           ${c.example?`<button class="ex" data-say="ex">${markEx(c.example,hlOf(c))}</button>
           <span class="exhint">${ICON_SPEAK.replace('class="i"','class="i" style="width:14px;height:14px"')}點例句聽整句</span>`:``}
         </div>
-        <span class="turn">${ICON_TURN}翻面</span>
+        <span class="turn">${ICON_TURN}點一下或左右滑動翻面</span>
       </div>
     </div></div>`;
 }
@@ -425,8 +425,17 @@ function wireCard(el, c, onFlip){
   el.addEventListener("click",e=>{
     const s=e.target.closest("[data-say]");
     if(s){ e.stopPropagation(); s.dataset.say==="ex" ? speak(c.example,null,Math.max(0.7,prefs.rate)) : speak(c.en, s.classList.contains("say")?s:null); return; }
-    el.classList.toggle("flipped"); onFlip && onFlip(el.classList.contains("flipped"));
+    if(Date.now()-swiped<400) return;
+    flip();
   });
+  const flip=()=>{ el.classList.toggle("flipped"); onFlip && onFlip(el.classList.contains("flipped")); };
+  /* 左右滑動翻面（上下滑動照常捲動頁面） */
+  let sx=0, sy=0, st=0, swiped=0;
+  el.addEventListener("touchstart",e=>{ const t=e.touches[0]; sx=t.clientX; sy=t.clientY; st=Date.now(); },{passive:true});
+  el.addEventListener("touchend",e=>{
+    const t=e.changedTouches[0], dx=t.clientX-sx, dy=t.clientY-sy;
+    if(Math.abs(dx)>40 && Math.abs(dx)>Math.abs(dy)*1.5 && Date.now()-st<800){ swiped=Date.now(); flip(); }
+  },{passive:true});
   el.addEventListener("keydown",e=>{ if((e.key==="Enter"||e.key===" ") && e.target===el){ e.preventDefault(); el.click(); }});
 }
 
@@ -675,14 +684,15 @@ function renderStudy(v){
       <button class="tog" id="auto" aria-pressed="${prefs.autoSpeak}">自動發音</button>
     </div>
     ${cardHTML(c, idx+1, {flipped: sp.start==="zh", cls:"big-card"})}
-    <div class="answerbar"><div class="answer"><button class="prev" id="prev" aria-label="上一張" ${a.pos?"":"disabled"}>‹</button><button class="again" id="no">還不熟</button><button class="good" id="yes">記住了</button></div></div>
+    <div class="answerbar"><div class="nav"><button id="prev" ${a.pos?"":"disabled"}>‹ 上一個</button><button id="skip">下一個 ›</button></div><div class="answer"><button class="again" id="no">還不熟</button><button class="good" id="yes">記住了</button></div></div>
   </div>`;
   const fc=v.querySelector(".fc");
   wireCard(fc, c, flipped=>{ if(prefs.autoSpeak && sp.start==="zh" && !flipped) speak(c.en); });
   $("#back").onclick=()=>go("home");
   a.hist=a.hist||[];
   const next=(known)=>{ a.hist.push({c,was:c.known,known}); c.known=known; known?a.good++:a.again++; a.pos++; saveSoon(deck); render(); };
-  $("#prev").onclick=()=>{ const h=a.hist.pop(); if(!h) return; h.c.known=h.was; h.known?a.good--:a.again--; a.pos--; saveSoon(deck); render(); };
+  $("#prev").onclick=()=>{ const h=a.hist.pop(); if(!h) return; if(!h.skip){ h.c.known=h.was; h.known?a.good--:a.again--; saveSoon(deck); } a.pos--; render(); };
+  $("#skip").onclick=()=>{ a.hist.push({c,skip:true}); a.pos++; render(); };
   $("#no").onclick=()=>next(false); $("#yes").onclick=()=>next(true);
   const reset=()=>{delete a.order; render();};
   $("#sEn").onclick=()=>{sp.start="en";lsSet("wc_study",sp);render();};
@@ -701,7 +711,7 @@ function renderList(v){
   <div class="stack">
     <div class="row"><button class="text" id="back">← 返回</button><span class="grow"></span><button class="primary" id="st">開始練習</button></div>
     <h2>${esc(deck.title)}</h2>
-    <div class="row small muted"><span class="grow">點卡片翻面，點喇叭聽發音。</span><button class="text small" id="allBack">全部翻到中文</button></div>
+    <div class="row small muted"><span class="grow">點一下或左右滑動卡片就能翻面，點喇叭可以聽發音。</span><button class="text small" id="allBack">全部翻到中文</button></div>
     <div class="wall">${deck.cards.map((c,i)=>cardHTML(c,i+1)).join("")}</div>
   </div>`;
   $("#back").onclick=()=>go("home");
